@@ -42,16 +42,46 @@ class vpnServerNode():
 
     def connect_to_server(self):
         paramiko.util.log_to_file('ssh_'+self.name+'_session.log')
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self.ssh = paramiko.SSHClient()
+        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         try:
-            ssh.connect(self.ip, self.port, self.user, self.passwd)
+            self.ssh.connect(self.ip, self.port, self.user, self.passwd)
             print 'Connected to server'
             return True
         except:
             print 'Error connect'
             return False
+
+    def is_openvpn_installed(self):
+        stdin, stdout, stderr = self.ssh.exec_command("openvpn --version")
+        # print stdout
+        output = ""
+        for line in stdout:
+            output = output + line.strip('\n')
+
+        if output != "":
+            return True
+        else:
+            return False
+
+    def what_running(self):
+        stdin, stdout, stderr = self.ssh.exec_command("service openvpn status")
+
+        output = ""
+        for line in stdout:
+            output = output + line.strip('\n')
+
+        return output
+
+    def conf_exist(self):
+        stdin, stdout, stderr = self.ssh.exec_command("ls /etc/openvpn/*.conf")
+
+        output = ""
+        for line in stdout:
+            output = output + line.strip('\n').replace("/etc/openvpn/","")
+
+        return output
 
 
 def get_config(config_file=None):
@@ -88,4 +118,7 @@ def get_config(config_file=None):
 
 server_list = get_config()
 
-print server_list.server_list[0].connect_to_server()
+main_server = server_list.server_list[0]
+print main_server.connect_to_server()
+
+print main_server.conf_exist()
