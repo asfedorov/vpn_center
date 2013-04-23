@@ -40,6 +40,19 @@ class vpnServerNode():
     def set_port(self, port):
         self.port = port
 
+    def connect_to_server(self):
+        paramiko.util.log_to_file('ssh_'+self.name+'_session.log')
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        try:
+            ssh.connect(self.ip, self.port, self.user, self.passwd)
+            print 'Connected to server'
+            return True
+        except:
+            print 'Error connect'
+            return False
+
 
 def get_config(config_file=None):
     if config_file==None:
@@ -56,7 +69,7 @@ def get_config(config_file=None):
         else:
             config_line_array = config_line.split("=")
             config_var = config_line_array[0]
-            config_val = config_line_array[1].replace("\n","")
+            config_val = config_line_array[1].split(";")[0]
             if config_var == "Name":
                 server.set_name(config_val)
             if config_var == "IP":
@@ -68,8 +81,11 @@ def get_config(config_file=None):
             if config_var == "Port":
                 server.set_port(config_val)
 
-    server_list.add_server_node(server)            
+    server_list.add_server_node(server)   
+
+    return server_list         
 
 
+server_list = get_config()
 
-get_config()
+print server_list.server_list[0].connect_to_server()
