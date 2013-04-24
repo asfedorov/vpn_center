@@ -6,6 +6,7 @@ from ui_main import Ui_MainWindow
 
 import __main__
 
+
 class MainForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
 
@@ -21,8 +22,9 @@ class MainForm(QtGui.QMainWindow):
         group_box = QtGui.QGroupBox(self)
 
         name = self.ui.server_name.text()
+        # print name.toUtf8()
         if name != "":
-            group_box.setTitle(str(name))
+            group_box.setTitle(str(name.toUtf8()).decode("utf-8"))
         else:
             group_box.setTitle("New Server")
 
