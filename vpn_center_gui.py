@@ -27,6 +27,13 @@ class MainForm(QtGui.QMainWindow):
             group_box.setTitle("New Server")
 
         server_config = QtGui.QTableWidget(self)
+        server_config.insertRow(0)
+        server_config.insertColumn(0)
+        server_config.insertColumn(1)
+
+        ip_row_label = QtGui.QLabel("IP Address")
+
+        server_config.setCellWidget(0,0,ip_row_label)
 
         server_config_layout = QtGui.QVBoxLayout(self)
 
