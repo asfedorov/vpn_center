@@ -21,6 +21,19 @@ class MainForm(QtGui.QMainWindow):
 
         self.connect(self.ui.add_server_button, QtCore.SIGNAL('pressed()'),self.add_server_to_list)
 
+    def remove_server_from_list(self):
+        # print "Nya"
+        button = self.sender()
+        group_box = button.parentWidget()
+        # layout = group_box.parentLayout()
+        # print layout
+        # layout.removeItem(group_box)
+        i = self.server_list_layout.indexOf(group_box)
+        # print i
+        self.server_list_layout.removeItem(self.server_list_layout.itemAt(i))
+        group_box.hide()
+        # print str(parent)
+
     def add_server_to_list(self):
         group_box = QtGui.QGroupBox(self)
 
@@ -36,8 +49,10 @@ class MainForm(QtGui.QMainWindow):
         ip_row_layout = QtGui.QHBoxLayout()
         
         ip_row_label = QtGui.QLabel("IP Address")
+        ip_row_label.setFixedWidth(100)
         ip_row_delimeter = QtGui.QLabel(" : ")
         ip_row_value = QtGui.QLineEdit()
+        ip_row_value.setFixedWidth(200)
 
         ip_row_layout.addWidget(ip_row_label)
         ip_row_layout.addWidget(ip_row_delimeter)
@@ -48,8 +63,10 @@ class MainForm(QtGui.QMainWindow):
         user_row_layout = QtGui.QHBoxLayout()
         
         user_row_label = QtGui.QLabel("User Name")
+        user_row_label.setFixedWidth(100)
         user_row_delimeter = QtGui.QLabel(" : ")
         user_row_value = QtGui.QLineEdit()
+        user_row_value.setFixedWidth(200)
 
         user_row_layout.addWidget(user_row_label)
         user_row_layout.addWidget(user_row_delimeter)
@@ -60,12 +77,22 @@ class MainForm(QtGui.QMainWindow):
         passwd_row_layout = QtGui.QHBoxLayout()
         
         passwd_row_label = QtGui.QLabel("Passwd")
+        passwd_row_label.setFixedWidth(100)
         passwd_row_delimeter = QtGui.QLabel(" : ")
         passwd_row_value = QtGui.QLineEdit()
+        passwd_row_value.setFixedWidth(200)
 
         passwd_row_layout.addWidget(passwd_row_label)
         passwd_row_layout.addWidget(passwd_row_delimeter)
         passwd_row_layout.addWidget(passwd_row_value)
+
+        ##### buttons #####
+
+        delete_button = QtGui.QPushButton()
+        delete_button.setText("Delete Server")
+
+        self.connect(delete_button, QtCore.SIGNAL('pressed()'),self.remove_server_from_list)
+
 
         ##### server layout #####
 
@@ -74,6 +101,7 @@ class MainForm(QtGui.QMainWindow):
         server_config_layout.addLayout(ip_row_layout)
         server_config_layout.addLayout(user_row_layout)
         server_config_layout.addLayout(passwd_row_layout)
+        server_config_layout.addWidget(delete_button)
 
 
         group_box.setLayout(server_config_layout)  
