@@ -7,13 +7,13 @@ from ui_main import Ui_MainWindow
 import server_connect
 
 class ServerGUI_Node(server_connect.vpnServerNode):
-    def __init__(self,name="",ip="",user="",passwd="",port="22"):
+    def __init__(self,mainform_obj,name="",ip="",user="",passwd="",port="22"):
         self.name = name
         self.ip = ip
         self.user = user
         self.passwd = passwd
         self.port = port
-
+        self.mainform_obj = mainform_obj
         self.make_group_box()
 
     def make_group_box(self):
@@ -78,8 +78,8 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
         ##### buttons #####
 
-        self.delete_button = QtGui.QPushButton()
-        self.delete_button.setText("Delete Server")
+        delete_button = QtGui.QPushButton()
+        delete_button.setText("Delete Server")
 
         ##### server layout #####
 
@@ -88,11 +88,16 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         server_config_layout.addLayout(ip_row_layout)
         server_config_layout.addLayout(user_row_layout)
         server_config_layout.addLayout(passwd_row_layout)
-        server_config_layout.addWidget(self.delete_button)
+        server_config_layout.addWidget(delete_button)
 
 
         self.group_box.setLayout(server_config_layout)  
         self.group_box.adjustSize()
+
+        self.mainform_obj.connect(delete_button, QtCore.SIGNAL('pressed()'),self.mainform_obj.remove_server_from_list)
+
+    def make_server_tab(self):
+        pass
 
 
 class MainForm(QtGui.QMainWindow):
@@ -126,11 +131,10 @@ class MainForm(QtGui.QMainWindow):
 
     def add_server_to_list(self,name="",ip="",user="",passwd="",port="22"):
         
-        server = ServerGUI_Node(name,ip,user,passwd,port)
+        server = ServerGUI_Node(self,name,ip,user,passwd,port)
         
         self.server_list_layout.addWidget(server.group_box)
-
-        self.connect(server.delete_button, QtCore.SIGNAL('pressed()'),self.remove_server_from_list)
+        
         
         self.create_server_tab(name.decode("utf-8"))
 
