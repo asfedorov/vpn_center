@@ -96,7 +96,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         self.group_box.setLayout(server_config_layout)  
         self.group_box.adjustSize()
 
-        self.mainform_obj.connect(delete_button, QtCore.SIGNAL('pressed()'),self.delete_server)
+        self.mainform_obj.connect(delete_button, QtCore.SIGNAL('pressed()'),self.mainform_obj.remove_server_from_list)
 
         self.make_server_tab()
         
@@ -124,6 +124,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         server_widget.setWidget(connection_label)
         
     def delete_server(self):
+        print 1
         i = self.mainform_obj.server_list_layout.indexOf(self.group_box)
         print i
         self.mainform_obj.server_list_layout.removeItem(self.mainform_obj.server_list_layout.itemAt(i))
@@ -146,18 +147,18 @@ class MainForm(QtGui.QMainWindow):
 
         self.get_servers_from_config()
 
-    # def remove_server_from_list(self, sender=self.sender):
-    #     # print "Nya"
-    #     button = self.sender()
-    #     group_box = button.parentWidget()
-    #     # layout = group_box.parentLayout()
-    #     # print layout
-    #     # layout.removeItem(group_box)
-    #     i = self.server_list_layout.indexOf(group_box)
-    #     # print i
-    #     self.server_list_layout.removeItem(self.server_list_layout.itemAt(i))
-    #     group_box.hide()
-    #     # print str(parent)
+    def remove_server_from_list(self):
+        # print "Nya"
+        button = self.sender()
+        group_box = button.parentWidget()
+        # layout = group_box.parentLayout()
+        # print layout
+        # layout.removeItem(group_box)
+        i = self.server_list_layout.indexOf(group_box)
+        # print i
+        self.server_list_layout.removeItem(self.server_list_layout.itemAt(i))
+        group_box.hide()
+        # print str(parent)
 
     def add_server_to_list(self,name="",ip="",user="",passwd="",port="22"):
         
