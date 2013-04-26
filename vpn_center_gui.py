@@ -36,12 +36,13 @@ class MainForm(QtGui.QMainWindow):
         group_box.hide()
         # print str(parent)
 
-    def add_server_to_list(self,name="",ip="",user="",passwd="",port=""):
+    def add_server_to_list(self,name="",ip="",user="",passwd="",port="22"):
         group_box = QtGui.QGroupBox(self)
 
         # print name.toUtf8()
         if name != "":
-            group_box.setTitle(name)
+            # name = name.decode("utf-8")
+            group_box.setTitle(name.decode("utf-8"))
         else:
             name = self.ui.server_name.text()
             if name != "":
@@ -56,7 +57,10 @@ class MainForm(QtGui.QMainWindow):
         ip_row_label = QtGui.QLabel("IP Address")
         ip_row_label.setFixedWidth(100)
         ip_row_delimeter = QtGui.QLabel(" : ")
-        ip_row_value = QtGui.QLineEdit(ip)
+        if port == "22":
+            ip_row_value = QtGui.QLineEdit(ip)
+        else:
+            ip_row_value = QtGui.QLineEdit(ip+":"+port)
         ip_row_value.setFixedWidth(200)
 
         ip_row_layout.addWidget(ip_row_label)
@@ -117,14 +121,18 @@ class MainForm(QtGui.QMainWindow):
 
         self.server_list_layout.addWidget(group_box)
         
-        
+        self.create_server_tab(name.decode("utf-8"))
 
         # self.ui.server_list_layout.addWidget(group_box)
 
     def get_servers_from_config(self):
         server_list = server_connect.get_config()
         for server in server_list.server_list:
-            self.add_server_to_list(server.name,server.ip,server.user,server.passwd )
+            self.add_server_to_list(server.name,server.ip,server.user,server.passwd,server.port)
+
+    def create_server_tab(self,name=""):
+        server_widget = QtGui.QScrollArea()
+        self.ui.tabWidget.addTab(server_widget,name)
 
 
 
