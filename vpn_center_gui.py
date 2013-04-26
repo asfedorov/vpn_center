@@ -6,6 +6,94 @@ from ui_main import Ui_MainWindow
 
 import server_connect
 
+class ServerGUI_Node(server_connect.vpnServerNode):
+    def __init__(self,name="",ip="",user="",passwd="",port="22"):
+        self.name = name
+        self.ip = ip
+        self.user = user
+        self.passwd = passwd
+        self.port = port
+
+        self.make_group_box()
+
+    def make_group_box(self):
+        self.group_box = QtGui.QGroupBox()
+
+        # print name.toUtf8()
+        if self.name != "":
+            # name = name.decode("utf-8")
+            self.group_box.setTitle(self.name.decode("utf-8"))
+        else:
+            self.name = self.ui.server_name.text()
+            if self.name != "":
+                self.group_box.setTitle(str(self.name.toUtf8()).decode("utf-8"))
+            else:
+                self.group_box.setTitle("New Server")
+
+        ##### ip configs #####
+
+        ip_row_layout = QtGui.QHBoxLayout()
+        
+        ip_row_label = QtGui.QLabel("IP Address")
+        ip_row_label.setFixedWidth(100)
+        ip_row_delimeter = QtGui.QLabel(" : ")
+        if self.port == "22":
+            ip_row_value = QtGui.QLineEdit(self.ip)
+        else:
+            ip_row_value = QtGui.QLineEdit(self.ip+":"+self.port)
+        ip_row_value.setFixedWidth(200)
+
+        ip_row_layout.addWidget(ip_row_label)
+        ip_row_layout.addWidget(ip_row_delimeter)
+        ip_row_layout.addWidget(ip_row_value)
+
+        ##### user configs #####
+
+        user_row_layout = QtGui.QHBoxLayout()
+        
+        user_row_label = QtGui.QLabel("User Name")
+        user_row_label.setFixedWidth(100)
+        user_row_delimeter = QtGui.QLabel(" : ")
+        user_row_value = QtGui.QLineEdit(self.user)
+        user_row_value.setFixedWidth(200)
+
+        user_row_layout.addWidget(user_row_label)
+        user_row_layout.addWidget(user_row_delimeter)
+        user_row_layout.addWidget(user_row_value)
+
+        ##### passwd configs #####
+
+        passwd_row_layout = QtGui.QHBoxLayout()
+        
+        passwd_row_label = QtGui.QLabel("Passwd")
+        passwd_row_label.setFixedWidth(100)
+        passwd_row_delimeter = QtGui.QLabel(" : ")
+        passwd_row_value = QtGui.QLineEdit(self.passwd)
+        passwd_row_value.setEchoMode(QtGui.QLineEdit.PasswordEchoOnEdit)
+        passwd_row_value.setFixedWidth(200)
+
+        passwd_row_layout.addWidget(passwd_row_label)
+        passwd_row_layout.addWidget(passwd_row_delimeter)
+        passwd_row_layout.addWidget(passwd_row_value)
+
+        ##### buttons #####
+
+        self.delete_button = QtGui.QPushButton()
+        self.delete_button.setText("Delete Server")
+
+        ##### server layout #####
+
+        server_config_layout = QtGui.QVBoxLayout()
+
+        server_config_layout.addLayout(ip_row_layout)
+        server_config_layout.addLayout(user_row_layout)
+        server_config_layout.addLayout(passwd_row_layout)
+        server_config_layout.addWidget(self.delete_button)
+
+
+        self.group_box.setLayout(server_config_layout)  
+        self.group_box.adjustSize()
+
 
 class MainForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -37,89 +125,12 @@ class MainForm(QtGui.QMainWindow):
         # print str(parent)
 
     def add_server_to_list(self,name="",ip="",user="",passwd="",port="22"):
-        group_box = QtGui.QGroupBox(self)
-
-        # print name.toUtf8()
-        if name != "":
-            # name = name.decode("utf-8")
-            group_box.setTitle(name.decode("utf-8"))
-        else:
-            name = self.ui.server_name.text()
-            if name != "":
-                group_box.setTitle(str(name.toUtf8()).decode("utf-8"))
-            else:
-                group_box.setTitle("New Server")
-
-        ##### ip configs #####
-
-        ip_row_layout = QtGui.QHBoxLayout()
         
-        ip_row_label = QtGui.QLabel("IP Address")
-        ip_row_label.setFixedWidth(100)
-        ip_row_delimeter = QtGui.QLabel(" : ")
-        if port == "22":
-            ip_row_value = QtGui.QLineEdit(ip)
-        else:
-            ip_row_value = QtGui.QLineEdit(ip+":"+port)
-        ip_row_value.setFixedWidth(200)
-
-        ip_row_layout.addWidget(ip_row_label)
-        ip_row_layout.addWidget(ip_row_delimeter)
-        ip_row_layout.addWidget(ip_row_value)
-
-        ##### user configs #####
-
-        user_row_layout = QtGui.QHBoxLayout()
+        server = ServerGUI_Node(name,ip,user,passwd,port)
         
-        user_row_label = QtGui.QLabel("User Name")
-        user_row_label.setFixedWidth(100)
-        user_row_delimeter = QtGui.QLabel(" : ")
-        user_row_value = QtGui.QLineEdit(user)
-        user_row_value.setFixedWidth(200)
+        self.server_list_layout.addWidget(server.group_box)
 
-        user_row_layout.addWidget(user_row_label)
-        user_row_layout.addWidget(user_row_delimeter)
-        user_row_layout.addWidget(user_row_value)
-
-        ##### passwd configs #####
-
-        passwd_row_layout = QtGui.QHBoxLayout()
-        
-        passwd_row_label = QtGui.QLabel("Passwd")
-        passwd_row_label.setFixedWidth(100)
-        passwd_row_delimeter = QtGui.QLabel(" : ")
-        passwd_row_value = QtGui.QLineEdit(passwd)
-        passwd_row_value.setEchoMode(QtGui.QLineEdit.PasswordEchoOnEdit)
-        passwd_row_value.setFixedWidth(200)
-
-        passwd_row_layout.addWidget(passwd_row_label)
-        passwd_row_layout.addWidget(passwd_row_delimeter)
-        passwd_row_layout.addWidget(passwd_row_value)
-
-        ##### buttons #####
-
-        delete_button = QtGui.QPushButton()
-        delete_button.setText("Delete Server")
-
-        self.connect(delete_button, QtCore.SIGNAL('pressed()'),self.remove_server_from_list)
-
-
-        ##### server layout #####
-
-        server_config_layout = QtGui.QVBoxLayout()
-
-        server_config_layout.addLayout(ip_row_layout)
-        server_config_layout.addLayout(user_row_layout)
-        server_config_layout.addLayout(passwd_row_layout)
-        server_config_layout.addWidget(delete_button)
-
-
-        group_box.setLayout(server_config_layout)  
-        group_box.adjustSize()          
-
-        
-
-        self.server_list_layout.addWidget(group_box)
+        self.connect(server.delete_button, QtCore.SIGNAL('pressed()'),self.remove_server_from_list)
         
         self.create_server_tab(name.decode("utf-8"))
 
