@@ -7,14 +7,16 @@ from ui_main import Ui_MainWindow
 import server_connect
 
 class ServerGUI_Node(server_connect.vpnServerNode):
-    def __init__(self,mainform_obj,name="",ip="",user="",passwd="",port="22"):
+    def __init__(self,mainform_obj,name="",ip="",user="",passwd="",port=22):
         self.name = name
         self.ip = ip
         self.user = user
         self.passwd = passwd
-        self.port = port
+        self.port = int(port)
         self.mainform_obj = mainform_obj
+
         self.make_group_box()
+        
 
     def make_group_box(self):
         self.group_box = QtGui.QGroupBox()
@@ -37,10 +39,10 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         ip_row_label = QtGui.QLabel("IP Address")
         ip_row_label.setFixedWidth(100)
         ip_row_delimeter = QtGui.QLabel(" : ")
-        if self.port == "22":
+        if self.port == 22:
             ip_row_value = QtGui.QLineEdit(self.ip)
         else:
-            ip_row_value = QtGui.QLineEdit(self.ip+":"+self.port)
+            ip_row_value = QtGui.QLineEdit(self.ip+":"+str(self.port))
         ip_row_value.setFixedWidth(200)
 
         ip_row_layout.addWidget(ip_row_label)
@@ -94,10 +96,38 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         self.group_box.setLayout(server_config_layout)  
         self.group_box.adjustSize()
 
-        self.mainform_obj.connect(delete_button, QtCore.SIGNAL('pressed()'),self.mainform_obj.remove_server_from_list)
+        self.mainform_obj.connect(delete_button, QtCore.SIGNAL('pressed()'),self.delete_server)
+
+        self.make_server_tab()
+        
 
     def make_server_tab(self):
-        pass
+        
+
+        server_widget = QtGui.QScrollArea()
+        self.mainform_obj.ui.tabWidget.addTab(server_widget,self.name.decode("utf-8"))
+
+        connected = self.connect_to_server()
+        if connected == True:
+            connection_label = QtGui.QLabel("Connected")
+            conf = self.get_conf_file()
+            conf_text = QtGui.QTextEdit()
+            conf_text.setFixedWidth(600)
+            conf_text.setFixedHeight(500)
+            conf_text.setReadOnly(True)
+            conf_text.setPlainText(conf)
+            connection_label = conf_text
+        else:
+            connection_label = QtGui.QLabel("Not Connected")
+
+
+        server_widget.setWidget(connection_label)
+        
+    def delete_server(self):
+        i = self.mainform_obj.server_list_layout.indexOf(self.group_box)
+        print i
+        self.mainform_obj.server_list_layout.removeItem(self.mainform_obj.server_list_layout.itemAt(i))
+        self.group_box.hide()
 
 
 class MainForm(QtGui.QMainWindow):
@@ -116,18 +146,18 @@ class MainForm(QtGui.QMainWindow):
 
         self.get_servers_from_config()
 
-    def remove_server_from_list(self):
-        # print "Nya"
-        button = self.sender()
-        group_box = button.parentWidget()
-        # layout = group_box.parentLayout()
-        # print layout
-        # layout.removeItem(group_box)
-        i = self.server_list_layout.indexOf(group_box)
-        # print i
-        self.server_list_layout.removeItem(self.server_list_layout.itemAt(i))
-        group_box.hide()
-        # print str(parent)
+    # def remove_server_from_list(self, sender=self.sender):
+    #     # print "Nya"
+    #     button = self.sender()
+    #     group_box = button.parentWidget()
+    #     # layout = group_box.parentLayout()
+    #     # print layout
+    #     # layout.removeItem(group_box)
+    #     i = self.server_list_layout.indexOf(group_box)
+    #     # print i
+    #     self.server_list_layout.removeItem(self.server_list_layout.itemAt(i))
+    #     group_box.hide()
+    #     # print str(parent)
 
     def add_server_to_list(self,name="",ip="",user="",passwd="",port="22"):
         
@@ -135,8 +165,6 @@ class MainForm(QtGui.QMainWindow):
         
         self.server_list_layout.addWidget(server.group_box)
         
-        
-        self.create_server_tab(name.decode("utf-8"))
 
         # self.ui.server_list_layout.addWidget(group_box)
 
@@ -145,9 +173,7 @@ class MainForm(QtGui.QMainWindow):
         for server in server_list.server_list:
             self.add_server_to_list(server.name,server.ip,server.user,server.passwd,server.port)
 
-    def create_server_tab(self,name=""):
-        server_widget = QtGui.QScrollArea()
-        self.ui.tabWidget.addTab(server_widget,name)
+    
 
 
 

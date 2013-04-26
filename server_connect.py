@@ -44,7 +44,8 @@ class vpnServerNode():
         paramiko.util.log_to_file('ssh_'+self.name+'_session.log')
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
+        print "trying.."
+        # self.ssh.connect(self.ip, self.port, self.user, self.passwd)
         try:
             self.ssh.connect(self.ip, self.port, self.user, self.passwd)
             print 'Connected to server'
@@ -80,6 +81,15 @@ class vpnServerNode():
         output = ""
         for line in stdout:
             output = output + line.strip('\n').replace("/etc/openvpn/","")
+
+        return output
+
+    def get_conf_file(self):
+        stdin, stdout, stderr = self.ssh.exec_command("cat /etc/openvpn/client.conf")
+
+        output = ""
+        for line in stdout:
+            output = output + line
 
         return output
 
