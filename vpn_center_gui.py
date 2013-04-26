@@ -4,7 +4,7 @@ import sys, random
 from PyQt4 import QtCore, QtGui, Qt
 from ui_main import Ui_MainWindow
 
-import __main__
+import server_connect
 
 
 class MainForm(QtGui.QMainWindow):
@@ -21,6 +21,8 @@ class MainForm(QtGui.QMainWindow):
 
         self.connect(self.ui.add_server_button, QtCore.SIGNAL('pressed()'),self.add_server_to_list)
 
+        self.get_servers_from_config()
+
     def remove_server_from_list(self):
         # print "Nya"
         button = self.sender()
@@ -34,15 +36,18 @@ class MainForm(QtGui.QMainWindow):
         group_box.hide()
         # print str(parent)
 
-    def add_server_to_list(self):
+    def add_server_to_list(self,name="",ip="",user="",passwd="",port=""):
         group_box = QtGui.QGroupBox(self)
 
-        name = self.ui.server_name.text()
         # print name.toUtf8()
         if name != "":
-            group_box.setTitle(str(name.toUtf8()).decode("utf-8"))
+            group_box.setTitle(name)
         else:
-            group_box.setTitle("New Server")
+            name = self.ui.server_name.text()
+            if name != "":
+                group_box.setTitle(str(name.toUtf8()).decode("utf-8"))
+            else:
+                group_box.setTitle("New Server")
 
         ##### ip configs #####
 
@@ -51,7 +56,7 @@ class MainForm(QtGui.QMainWindow):
         ip_row_label = QtGui.QLabel("IP Address")
         ip_row_label.setFixedWidth(100)
         ip_row_delimeter = QtGui.QLabel(" : ")
-        ip_row_value = QtGui.QLineEdit()
+        ip_row_value = QtGui.QLineEdit(ip)
         ip_row_value.setFixedWidth(200)
 
         ip_row_layout.addWidget(ip_row_label)
@@ -65,7 +70,7 @@ class MainForm(QtGui.QMainWindow):
         user_row_label = QtGui.QLabel("User Name")
         user_row_label.setFixedWidth(100)
         user_row_delimeter = QtGui.QLabel(" : ")
-        user_row_value = QtGui.QLineEdit()
+        user_row_value = QtGui.QLineEdit(user)
         user_row_value.setFixedWidth(200)
 
         user_row_layout.addWidget(user_row_label)
@@ -79,7 +84,8 @@ class MainForm(QtGui.QMainWindow):
         passwd_row_label = QtGui.QLabel("Passwd")
         passwd_row_label.setFixedWidth(100)
         passwd_row_delimeter = QtGui.QLabel(" : ")
-        passwd_row_value = QtGui.QLineEdit()
+        passwd_row_value = QtGui.QLineEdit(passwd)
+        passwd_row_value.setEchoMode(QtGui.QLineEdit.PasswordEchoOnEdit)
         passwd_row_value.setFixedWidth(200)
 
         passwd_row_layout.addWidget(passwd_row_label)
@@ -114,6 +120,12 @@ class MainForm(QtGui.QMainWindow):
         
 
         # self.ui.server_list_layout.addWidget(group_box)
+
+    def get_servers_from_config(self):
+        server_list = server_connect.get_config()
+        for server in server_list.server_list:
+            self.add_server_to_list(server.name,server.ip,server.user,server.passwd )
+
 
 
 if __name__ == "__main__":

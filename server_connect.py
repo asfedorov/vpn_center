@@ -116,9 +116,9 @@ def get_config(config_file=None):
     return server_list         
 
 
-server_list = get_config()
+# server_list = get_config()
 
-main_server = server_list.server_list[0]
-print main_server.connect_to_server()
+# main_server = server_list.server_list[0]
+# print main_server.connect_to_server()
 
-print main_server.conf_exist()
+# print main_server.conf_exist()
