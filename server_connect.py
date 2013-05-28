@@ -5,6 +5,7 @@
 #
 
 import paramiko
+import re
 
 class ServerList():
     server_list = []
@@ -20,12 +21,17 @@ class ServerList():
             print "server already in list"
             return False
 
+class vpnConfNode():
+    def __init__(self,name):
+        self.name = name
+
 class vpnServerNode():
     name = ""
     ip = ""
     user = ""
     passwd = ""
     port = "22"
+    conf = []
     def __init__(self):
         pass
 
@@ -80,7 +86,11 @@ class vpnServerNode():
 
         output = ""
         for line in stdout:
-            output = output + line.replace("/etc/openvpn/","")
+            line = line.replace("/etc/openvpn/","")
+            output = output + line
+            node = vpnConfNode(line.replace(".conf","").replace('\n',""))
+
+            self.conf.append(node)
 
         return output
 
@@ -88,9 +98,11 @@ class vpnServerNode():
         print conf_file_name
         stdin, stdout, stderr = self.ssh.exec_command("cat /etc/openvpn/"+conf_file_name)
 
+
+
         output = ""
         for line in stdout:
-            output = output + line
+            output = output + re.sub("#.*\\n|;.*\\n", "", line)
 
         return output
 
