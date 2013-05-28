@@ -110,13 +110,21 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         connected = self.connect_to_server()
         if connected == True:
             connection_label = QtGui.QLabel("Connected")
-            conf = self.get_conf_file()
-            conf_text = QtGui.QTextEdit()
-            conf_text.setFixedWidth(600)
-            conf_text.setFixedHeight(500)
-            conf_text.setReadOnly(True)
-            conf_text.setPlainText(conf)
-            connection_label = conf_text
+            
+            #conf = self.get_conf_file()
+            
+            conf_files = self.conf_exist()
+            conf_files_array = conf_files.split("\n")
+            for conf_file in conf_files_array:
+                if conf_file != "":
+                    conf = self.get_conf_file(conf_file)
+
+                    conf_text = QtGui.QTextEdit()
+                    conf_text.setFixedWidth(600)
+                    conf_text.setFixedHeight(500)
+                    conf_text.setReadOnly(True)
+                    conf_text.setPlainText(conf)
+                    connection_label = conf_text
         else:
             connection_label = QtGui.QLabel("Not Connected")
 

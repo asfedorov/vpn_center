@@ -80,12 +80,13 @@ class vpnServerNode():
 
         output = ""
         for line in stdout:
-            output = output + line.strip('\n').replace("/etc/openvpn/","")
+            output = output + line.replace("/etc/openvpn/","")
 
         return output
 
-    def get_conf_file(self):
-        stdin, stdout, stderr = self.ssh.exec_command("cat /etc/openvpn/client.conf")
+    def get_conf_file(self, conf_file_name):
+        print conf_file_name
+        stdin, stdout, stderr = self.ssh.exec_command("cat /etc/openvpn/"+conf_file_name)
 
         output = ""
         for line in stdout:
