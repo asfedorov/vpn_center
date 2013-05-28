@@ -123,7 +123,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
                     conf_layout = QtGui.QVBoxLayout()
 
-                    conf = self.get_conf_file(conf_file.name+".conf")
+                    conf = self.get_conf_file(conf_file)
 
                     conf_text = QtGui.QTextEdit()
                     conf_text.setFixedWidth(600)

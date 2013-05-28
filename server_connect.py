@@ -22,6 +22,7 @@ class ServerList():
             return False
 
 class vpnConfNode():
+    conf = {}
     def __init__(self,name):
         self.name = name
 
@@ -94,15 +95,21 @@ class vpnServerNode():
 
         return output
 
-    def get_conf_file(self, conf_file_name):
-        print conf_file_name
-        stdin, stdout, stderr = self.ssh.exec_command("cat /etc/openvpn/"+conf_file_name)
+    def get_conf_file(self, conf_file):
+        print conf_file.name
+        stdin, stdout, stderr = self.ssh.exec_command("cat /etc/openvpn/"+conf_file.name+".conf")
 
 
 
         output = ""
         for line in stdout:
-            output = output + re.sub("#.*\\n|;.*\\n", "", line)
+            line_parsing = re.sub("#.*\\n|;.*\\n", "", line).strip()
+            line_array = line_parsing.split(" ")
+            if line_array.__len__() > 1:
+                conf_file.conf[line_array[0]] = line_array[1]
+            else:
+                conf_file.conf[line_array[0]] = True
+            output = output + line_parsing
 
         return output
 
