@@ -131,8 +131,25 @@ class ServerGUI_Node(server_connect.vpnServerNode):
                     conf_text.setReadOnly(True)
                     conf_text.setPlainText(conf)
 
-                    conf_layout.addWidget(conf_text)
+                    # conf_layout.addWidget(conf_text)
                     conf_box.setLayout(conf_layout)
+
+                    print conf_file.conf
+
+                    for conf_line in conf_file.conf:
+                        conf_row_layout = QtGui.QHBoxLayout()
+        
+                        conf_row_label = QtGui.QLabel(conf_line)
+                        conf_row_label.setFixedWidth(100)
+                        conf_row_delimeter = QtGui.QLabel(" : ")
+                        conf_row_value = QtGui.QLineEdit(str(conf_file.conf[conf_line]))
+                        conf_row_value.setFixedWidth(200)
+
+                        conf_row_layout.addWidget(conf_row_label)
+                        conf_row_layout.addWidget(conf_row_delimeter)
+                        conf_row_layout.addWidget(conf_row_value)
+
+                        conf_layout.addLayout(conf_row_layout)
 
                     server_widget.setWidget(conf_box)
         else:
