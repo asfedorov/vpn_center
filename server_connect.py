@@ -116,7 +116,9 @@ class vpnServerNode():
 
 def get_config(config_file=None):
     if config_file==None:
-        config_file = open("config", "r")
+        
+        config_file = open("config", "rw")
+
 
     server_list = ServerList()
     server = None
@@ -141,7 +143,9 @@ def get_config(config_file=None):
             if config_var == "Port":
                 server.set_port(config_val)
 
-    server_list.add_server_node(server)   
+    if server != None:
+        server_list.add_server_node(server)   
+
 
     return server_list         
 
