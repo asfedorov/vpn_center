@@ -111,9 +111,11 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
         ##### signals connections #####
 
-        self.mainform_obj.connect(delete_button, QtCore.SIGNAL('pressed()'),self.mainform_obj.remove_server_from_list)
+        # self.mainform_obj.connect(delete_button, QtCore.SIGNAL('pressed()'),self.mainform_obj.remove_server_from_list)
+        self.mainform_obj.connect(delete_button, QtCore.SIGNAL('pressed()'),self.remove_server)
 
-        self.mainform_obj.connect(connect_button, QtCore.SIGNAL('pressed()'), self.connect_to_server)
+
+        self.mainform_obj.connect(connect_button, QtCore.SIGNAL('pressed()'), self.fill_server_tab)
 
         self.mainform_obj.connect(ip_row_value, QtCore.SIGNAL('textChanged(QString)'), self.ip_changed)
         self.mainform_obj.connect(user_row_value, QtCore.SIGNAL('textChanged(QString)'), self.user_changed)
@@ -122,7 +124,9 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
         ##### tab for configuration #####
         self.conf_tab_pointer = self.make_server_tab()
+        self.fill_server_tab()
         # print self.mainform_obj.ui.tabWidget.indexOf(self.conf_tab_pointer)
+
 
     def ip_changed(self, q_ip_str):
         self.ip = str(q_ip_str)
@@ -136,9 +140,14 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
     def make_server_tab(self):
         
-
         server_widget = QtGui.QScrollArea()
         self.mainform_obj.ui.tabWidget.addTab(server_widget,str(self.name).decode("utf-8"))
+
+        return server_widget
+
+    def fill_server_tab(self):
+
+        server_widget = self.conf_tab_pointer
 
         connected = self.connect_to_server()
         if connected == True:
@@ -190,7 +199,11 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
             server_widget.setWidget(connection_label)
 
-        return server_widget
+    def remove_server(self):
+        self.conf_tab_pointer.setParent(None)
+        self.group_box.setParent(None)
+
+        
         
 
 class MainForm(QtGui.QMainWindow):
