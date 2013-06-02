@@ -36,6 +36,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
                 self.group_box.setTitle(str(self.name.toUtf8()).decode("utf-8"))
             else:
                 self.group_box.setTitle("New Server")
+                self.name = "New Server"
 
         ##### ip configs #####
 
@@ -113,7 +114,8 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         self.mainform_obj.connect(connect_button, QtCore.SIGNAL('pressed()'), self.connect_to_server)
 
 
-        self.make_server_tab()
+        self.conf_tab_pointer = self.make_server_tab()
+        # print self.mainform_obj.ui.tabWidget.indexOf(self.conf_tab_pointer)
         
 
     def make_server_tab(self):
@@ -171,6 +173,8 @@ class ServerGUI_Node(server_connect.vpnServerNode):
             connection_label = QtGui.QLabel("Not Connected")
 
             server_widget.setWidget(connection_label)
+
+        return server_widget
         
 
 class MainForm(QtGui.QMainWindow):
@@ -193,14 +197,15 @@ class MainForm(QtGui.QMainWindow):
         # print "Nya"
         button = self.sender()
         group_box = button.parentWidget()
-        # layout = group_box.parentLayout()
-        # print layout
-        # layout.removeItem(group_box)
-        i = self.server_list_layout.indexOf(group_box)
-        # print i
-        self.server_list_layout.removeItem(self.server_list_layout.itemAt(i))
-        group_box.hide()
-        # print str(parent)
+
+        group_box.obj_pointer.conf_tab_pointer.setParent(None)
+        
+        group_box.setParent(None)
+        # i = self.server_list_layout.indexOf(group_box)
+        
+        # self.server_list_layout.removeItem(self.server_list_layout.itemAt(i))
+        # group_box.hide()
+        
 
     def add_server_to_list(self,name="",ip="",user="",passwd="",port="22"):
         
