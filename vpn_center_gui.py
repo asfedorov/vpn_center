@@ -21,12 +21,17 @@ class ServerGUI_Node(server_connect.vpnServerNode):
     def make_group_box(self):
         self.group_box = QtGui.QGroupBox()
 
+
+        ## magick here. with this statement signal-to-slot connection for function defined in
+        ## other class, that MainForm works fine (at least i see its' output)
+        self.group_box.obj_pointer = self
+
         # print name.toUtf8()
         if self.name != "":
             # name = name.decode("utf-8")
             self.group_box.setTitle(self.name.decode("utf-8"))
         else:
-            self.name = self.ui.server_name.text()
+            self.name = self.mainform_obj.ui.server_name.text()
             if self.name != "":
                 self.group_box.setTitle(str(self.name.toUtf8()).decode("utf-8"))
             else:
@@ -83,6 +88,13 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         delete_button = QtGui.QPushButton()
         delete_button.setText("Delete Server")
 
+        connect_button = QtGui.QPushButton()
+        connect_button.setText("Connect to Server")
+
+        buttons_layout = QtGui.QHBoxLayout()
+        buttons_layout.addWidget(connect_button)
+        buttons_layout.addWidget(delete_button)
+
         ##### server layout #####
 
         server_config_layout = QtGui.QVBoxLayout()
@@ -90,13 +102,16 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         server_config_layout.addLayout(ip_row_layout)
         server_config_layout.addLayout(user_row_layout)
         server_config_layout.addLayout(passwd_row_layout)
-        server_config_layout.addWidget(delete_button)
+        server_config_layout.addLayout(buttons_layout)
 
 
         self.group_box.setLayout(server_config_layout)  
         self.group_box.adjustSize()
 
         self.mainform_obj.connect(delete_button, QtCore.SIGNAL('pressed()'),self.mainform_obj.remove_server_from_list)
+
+        self.mainform_obj.connect(connect_button, QtCore.SIGNAL('pressed()'), self.connect_to_server)
+
 
         self.make_server_tab()
         
@@ -105,7 +120,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         
 
         server_widget = QtGui.QScrollArea()
-        self.mainform_obj.ui.tabWidget.addTab(server_widget,self.name.decode("utf-8"))
+        self.mainform_obj.ui.tabWidget.addTab(server_widget,str(self.name).decode("utf-8"))
 
         connected = self.connect_to_server()
         if connected == True:
@@ -157,13 +172,6 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
             server_widget.setWidget(connection_label)
         
-    def delete_server(self):
-        print 1
-        i = self.mainform_obj.server_list_layout.indexOf(self.group_box)
-        print i
-        self.mainform_obj.server_list_layout.removeItem(self.mainform_obj.server_list_layout.itemAt(i))
-        self.group_box.hide()
-
 
 class MainForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
