@@ -109,13 +109,29 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         self.group_box.setLayout(server_config_layout)  
         self.group_box.adjustSize()
 
+        ##### signals connections #####
+
         self.mainform_obj.connect(delete_button, QtCore.SIGNAL('pressed()'),self.mainform_obj.remove_server_from_list)
 
         self.mainform_obj.connect(connect_button, QtCore.SIGNAL('pressed()'), self.connect_to_server)
 
+        self.mainform_obj.connect(ip_row_value, QtCore.SIGNAL('textChanged(QString)'), self.ip_changed)
+        self.mainform_obj.connect(user_row_value, QtCore.SIGNAL('textChanged(QString)'), self.user_changed)
+        self.mainform_obj.connect(passwd_row_value, QtCore.SIGNAL('textChanged(QString)'), self.passwd_changed)
 
+
+        ##### tab for configuration #####
         self.conf_tab_pointer = self.make_server_tab()
         # print self.mainform_obj.ui.tabWidget.indexOf(self.conf_tab_pointer)
+
+    def ip_changed(self, q_ip_str):
+        self.ip = str(q_ip_str)
+
+    def user_changed(self, q_user_str):
+        self.user = str(q_user_str)
+
+    def passwd_changed(self, q_passwd_str):
+        self.passwd = str(q_passwd_str)
         
 
     def make_server_tab(self):
