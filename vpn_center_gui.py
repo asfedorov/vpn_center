@@ -156,8 +156,10 @@ class ServerGUI_Node(server_connect.vpnServerNode):
             #conf = self.get_conf_file()
             
             conf_files = self.conf_exist()
-            conf_files_array = conf_files.split("\n")
-            for conf_file in self.conf:
+            # conf_files_array = conf_files.split("\n")
+
+            for conf_file_name in self.conf:
+                conf_file = self.conf[conf_file_name]
                 if conf_file.name != "":
 
                     conf_box = QtGui.QGroupBox()
@@ -179,6 +181,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
                     print conf_file.conf
 
                     for conf_line in conf_file.conf:
+
                         conf_row_layout = QtGui.QHBoxLayout()
         
                         conf_row_label = QtGui.QLabel(conf_line)
@@ -191,7 +194,20 @@ class ServerGUI_Node(server_connect.vpnServerNode):
                         conf_row_layout.addWidget(conf_row_delimeter)
                         conf_row_layout.addWidget(conf_row_value)
 
-                        conf_layout.addLayout(conf_row_layout)
+                        conf_row_del_button = QtGui.QPushButton()
+                        conf_row_del_button.setText("X__X")
+
+                        self.mainform_obj.connect(conf_row_del_button, QtCore.SIGNAL('pressed()'), self.remove_conf_line)
+
+                        conf_row_layout.addWidget(conf_row_del_button)
+
+                        conf_row_box = QtGui.QGroupBox()
+
+                        conf_row_box.setContentsMargins(10,3,10,3)
+
+                        conf_row_box.setLayout(conf_row_layout)
+
+                        conf_layout.addWidget(conf_row_box)
 
                     server_widget.setWidget(conf_box)
         else:
@@ -204,6 +220,17 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         self.group_box.setParent(None)
 
         
+    def remove_conf_line(self):
+        button = self.mainform_obj.sender()
+        conf_line = button.parentWidget()
+        # conf_line.setParent(None)
+        conf_row_label = str(conf_line.children()[1].text())
+        conf_file = str(conf_line.parentWidget().title())
+
+        self.conf[conf_file].conf.pop(conf_row_label)
+        conf_line.setParent(None)
+        print conf_row_label
+
         
 
 class MainForm(QtGui.QMainWindow):

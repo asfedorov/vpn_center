@@ -32,7 +32,7 @@ class vpnServerNode():
     user = ""
     passwd = ""
     port = "22"
-    conf = []
+    conf = {}
     def __init__(self):
         pass
 
@@ -89,9 +89,10 @@ class vpnServerNode():
         for line in stdout:
             line = line.replace("/etc/openvpn/","")
             output = output + line
-            node = vpnConfNode(line.replace(".conf","").replace('\n',""))
+            conf_name = line.replace(".conf","").replace('\n',"")
+            node = vpnConfNode(conf_name)
 
-            self.conf.append(node)
+            self.conf[conf_name] = node
 
         return output
 
