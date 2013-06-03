@@ -139,9 +139,22 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         
 
     def make_server_tab(self):
-        
+
+        server_tab_widget = QtGui.QWidget()
+        server_layout = QtGui.QVBoxLayout()
         server_widget = QtGui.QScrollArea()
-        self.mainform_obj.ui.tabWidget.addTab(server_widget,str(self.name).decode("utf-8"))
+
+        conf_row_add_button = QtGui.QPushButton()
+        conf_row_add_button.setText("+1 line")
+
+        server_layout.addWidget(server_widget)
+        server_layout.addWidget(conf_row_add_button)
+        server_tab_widget.setLayout(server_layout)
+
+        self.mainform_obj.connect(conf_row_add_button, QtCore.SIGNAL('pressed()'), self.add_conf_line)
+
+
+        self.mainform_obj.ui.tabWidget.addTab(server_tab_widget,str(self.name).decode("utf-8"))
 
         return server_widget
 
@@ -195,7 +208,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
                         conf_row_layout.addWidget(conf_row_value)
 
                         conf_row_del_button = QtGui.QPushButton()
-                        conf_row_del_button.setText("X__X")
+                        conf_row_del_button.setText("x__X")
 
                         self.mainform_obj.connect(conf_row_del_button, QtCore.SIGNAL('pressed()'), self.remove_conf_line)
 
@@ -204,12 +217,16 @@ class ServerGUI_Node(server_connect.vpnServerNode):
                         conf_row_box = QtGui.QGroupBox()
 
                         conf_row_box.setContentsMargins(10,3,10,3)
-
                         conf_row_box.setLayout(conf_row_layout)
-
                         conf_layout.addWidget(conf_row_box)
 
+
+
                     server_widget.setWidget(conf_box)
+
+
+
+
         else:
             connection_label = QtGui.QLabel("Not Connected")
 
@@ -230,6 +247,9 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         self.conf[conf_file].conf.pop(conf_row_label)
         conf_line.setParent(None)
         print conf_row_label
+
+    def add_conf_line(self):
+        print "Nya"
 
         
 
