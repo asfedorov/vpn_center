@@ -195,42 +195,44 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
                     for conf_line in conf_file.conf:
 
-                        conf_row_layout = QtGui.QHBoxLayout()
-        
-                        conf_row_label = QtGui.QLabel(conf_line)
-                        conf_row_label.setFixedWidth(100)
-                        conf_row_delimeter = QtGui.QLabel(" : ")
-                        conf_row_value = QtGui.QLineEdit(str(conf_file.conf[conf_line]))
-                        conf_row_value.setFixedWidth(200)
-
-                        conf_row_layout.addWidget(conf_row_label)
-                        conf_row_layout.addWidget(conf_row_delimeter)
-                        conf_row_layout.addWidget(conf_row_value)
-
-                        conf_row_del_button = QtGui.QPushButton()
-                        conf_row_del_button.setText("x__X")
-
-                        self.mainform_obj.connect(conf_row_del_button, QtCore.SIGNAL('pressed()'), self.remove_conf_line)
-
-                        conf_row_layout.addWidget(conf_row_del_button)
-
-                        conf_row_box = QtGui.QGroupBox()
-
-                        conf_row_box.setContentsMargins(10,3,10,3)
-                        conf_row_box.setLayout(conf_row_layout)
+                        conf_row_box = self.create_conf_row(conf_line,str(conf_file.conf[conf_line]))
+                        
                         conf_layout.addWidget(conf_row_box)
 
-
-
                     server_widget.setWidget(conf_box)
-
-
-
 
         else:
             connection_label = QtGui.QLabel("Not Connected")
 
             server_widget.setWidget(connection_label)
+
+    def create_conf_row(self,label,value=""):
+        conf_row_layout = QtGui.QHBoxLayout()
+        
+        conf_row_label = QtGui.QLabel(label)
+        conf_row_label.setFixedWidth(100)
+        conf_row_delimeter = QtGui.QLabel(" : ")
+        conf_row_value = QtGui.QLineEdit(value)
+        conf_row_value.setFixedWidth(200)
+
+        conf_row_layout.addWidget(conf_row_label)
+        conf_row_layout.addWidget(conf_row_delimeter)
+        conf_row_layout.addWidget(conf_row_value)
+
+        conf_row_del_button = QtGui.QPushButton()
+        conf_row_del_button.setText("x__X")
+
+        self.mainform_obj.connect(conf_row_del_button, QtCore.SIGNAL('pressed()'), self.remove_conf_line)
+
+        conf_row_layout.addWidget(conf_row_del_button)
+
+        conf_row_box = QtGui.QGroupBox()
+
+        conf_row_box.setContentsMargins(10,3,10,3)
+        
+        conf_row_box.setLayout(conf_row_layout)
+
+        return conf_row_box
 
     def remove_server(self):
         self.conf_tab_pointer.setParent(None)
