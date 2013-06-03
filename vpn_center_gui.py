@@ -22,8 +22,9 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         self.group_box = QtGui.QGroupBox()
 
 
-        ## magick here. with this statement signal-to-slot connection for function defined in
-        ## other class, that MainForm works fine (at least i see its' output)
+        ## magick here. with this statement signal-to-slot connection 
+        ## for function defined in other class, that MainForm
+        ## works fine (at least i see its' output)
         self.group_box.obj_pointer = self
 
         # print name.toUtf8()
@@ -111,15 +112,19 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
         ##### signals connections #####
 
-        # self.mainform_obj.connect(delete_button, QtCore.SIGNAL('pressed()'),self.mainform_obj.remove_server_from_list)
-        self.mainform_obj.connect(delete_button, QtCore.SIGNAL('pressed()'),self.remove_server)
+        self.mainform_obj.connect(delete_button, 
+            QtCore.SIGNAL('pressed()'),self.remove_server)
 
 
-        self.mainform_obj.connect(connect_button, QtCore.SIGNAL('pressed()'), self.fill_server_tab)
+        self.mainform_obj.connect(connect_button, 
+            QtCore.SIGNAL('pressed()'), self.fill_server_tab)
 
-        self.mainform_obj.connect(ip_row_value, QtCore.SIGNAL('textChanged(QString)'), self.ip_changed)
-        self.mainform_obj.connect(user_row_value, QtCore.SIGNAL('textChanged(QString)'), self.user_changed)
-        self.mainform_obj.connect(passwd_row_value, QtCore.SIGNAL('textChanged(QString)'), self.passwd_changed)
+        self.mainform_obj.connect(ip_row_value, 
+            QtCore.SIGNAL('textChanged(QString)'), self.ip_changed)
+        self.mainform_obj.connect(user_row_value, 
+            QtCore.SIGNAL('textChanged(QString)'), self.user_changed)
+        self.mainform_obj.connect(passwd_row_value, 
+            QtCore.SIGNAL('textChanged(QString)'), self.passwd_changed)
 
 
         ##### tab for configuration #####
@@ -151,10 +156,12 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         server_layout.addWidget(conf_row_add_button)
         server_tab_widget.setLayout(server_layout)
 
-        self.mainform_obj.connect(conf_row_add_button, QtCore.SIGNAL('pressed()'), self.add_conf_line)
+        self.mainform_obj.connect(conf_row_add_button, 
+            QtCore.SIGNAL('pressed()'), self.add_conf_line)
 
 
-        self.mainform_obj.ui.tabWidget.addTab(server_tab_widget,str(self.name).decode("utf-8"))
+        self.mainform_obj.ui.tabWidget.addTab(server_tab_widget,
+            str(self.name).decode("utf-8"))
 
         return server_widget
 
@@ -182,20 +189,14 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
                     conf = self.get_conf_file(conf_file)
 
-                    conf_text = QtGui.QTextEdit()
-                    conf_text.setFixedWidth(600)
-                    conf_text.setFixedHeight(500)
-                    conf_text.setReadOnly(True)
-                    conf_text.setPlainText(conf)
-
-                    # conf_layout.addWidget(conf_text)
                     conf_box.setLayout(conf_layout)
 
                     print conf_file.conf
 
                     for conf_line in conf_file.conf:
 
-                        conf_row_box = self.create_conf_row(conf_line,str(conf_file.conf[conf_line]))
+                        conf_row_box = self.create_conf_row(conf_line,
+                            str(conf_file.conf[conf_line]))
                         
                         conf_layout.addWidget(conf_row_box)
 
@@ -222,7 +223,8 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         conf_row_del_button = QtGui.QPushButton()
         conf_row_del_button.setText("x__X")
 
-        self.mainform_obj.connect(conf_row_del_button, QtCore.SIGNAL('pressed()'), self.remove_conf_line)
+        self.mainform_obj.connect(conf_row_del_button, 
+            QtCore.SIGNAL('pressed()'), self.remove_conf_line)
 
         conf_row_layout.addWidget(conf_row_del_button)
 
@@ -274,7 +276,8 @@ class MainForm(QtGui.QMainWindow):
         self.server_list_layout = QtGui.QVBoxLayout()
         self.ui.server_list_container.setLayout(self.server_list_layout)
 
-        self.connect(self.ui.add_server_button, QtCore.SIGNAL('pressed()'),self.add_server_to_list)
+        self.connect(self.ui.add_server_button, 
+            QtCore.SIGNAL('pressed()'),self.add_server_to_list)
 
         self.get_servers_from_config()
 
@@ -304,7 +307,8 @@ class MainForm(QtGui.QMainWindow):
     def get_servers_from_config(self):
         server_list = server_connect.get_config()
         for server in server_list.server_list:
-            self.add_server_to_list(server.name,server.ip,server.user,server.passwd,server.port)
+            self.add_server_to_list(server.name,server.ip,
+                server.user,server.passwd,server.port)
 
     
 
