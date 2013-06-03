@@ -249,6 +249,13 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         print conf_row_label
 
     def add_conf_line(self):
+        dialog = QtGui.QDialog()
+
+        b_test = QtGui.QPushButton()
+        b_test.setText("Nya")
+
+        # dialog.setWidget(b_test)
+        dialog.exec_()
         print "Nya"
 
         
