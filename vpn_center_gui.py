@@ -7,6 +7,7 @@ from ui_main import Ui_MainWindow
 import server_connect
 
 class ServerGUI_Node(server_connect.vpnServerNode):
+    conf_box_pointer_list = {}
     def __init__(self,mainform_obj,name="",ip="",user="",passwd="",port=22):
         self.name = name
         self.ip = ip
@@ -186,9 +187,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
                     conf_box.setTitle(conf_file.name)
 
                     conf_layout = QtGui.QVBoxLayout()
-
                     conf = self.get_conf_file(conf_file)
-
                     conf_box.setLayout(conf_layout)
 
                     print conf_file.conf
@@ -201,6 +200,8 @@ class ServerGUI_Node(server_connect.vpnServerNode):
                         conf_layout.addWidget(conf_row_box)
 
                     server_widget.setWidget(conf_box)
+
+                    self.conf_box_pointer_list[conf_file.name] = conf_box
 
         else:
             connection_label = QtGui.QLabel("Not Connected")
@@ -253,14 +254,33 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         print conf_row_label
 
     def add_conf_line(self):
-        dialog = QtGui.QDialog()
 
-        b_test = QtGui.QPushButton()
-        b_test.setText("Nya")
+        button = self.mainform_obj.sender()
+        conf_line = button.parentWidget()
+        
+        ### there.. need to pick it in any way
+        #conf_file = str(conf_line.parentWidget().title())
+        print conf_line.children()[1].children()[0].children()[0].title()
+        conf_file = str(conf_line.children()[1].children()[0].children()[0].title())
 
-        # dialog.setWidget(b_test)
+        dialog = QtGui.QInputDialog()
+        dialog.setLabelText("Enter config line label")
+
         dialog.exec_()
-        print "Nya"
+
+        label = str(dialog.textValue()).strip()
+
+        if label != "":
+            conf_row_box = self.create_conf_row(label)
+
+            conf_box = self.conf_box_pointer_list[conf_file]
+
+            
+
+            conf_box.children()[0].addWidget(conf_row_box)
+            #server_layout = server_widget.layout()
+
+            #server_layout.addWidget(conf_row_box)
 
         
 
