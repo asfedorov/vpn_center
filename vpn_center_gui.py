@@ -7,7 +7,7 @@ from ui_main import Ui_MainWindow
 import server_connect
 
 class ServerGUI_Node(server_connect.vpnServerNode):
-    conf_box_pointer_list = {}
+    
     def __init__(self,mainform_obj,name="",ip="",user="",passwd="",port=22):
         self.name = name
         self.ip = ip
@@ -15,6 +15,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         self.passwd = passwd
         self.port = int(port)
         self.mainform_obj = mainform_obj
+        self.conf_box_pointer_list = {}
 
         self.make_group_box()
         
@@ -131,6 +132,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         ##### tab for configuration #####
         self.conf_tab_pointer = self.make_server_tab()
         self.fill_server_tab()
+        print self.conf_box_pointer_list
         # print self.mainform_obj.ui.tabWidget.indexOf(self.conf_tab_pointer)
 
 
@@ -170,7 +172,11 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
         server_widget = self.conf_tab_pointer
 
+        # print self.name
+
+        print self.name
         connected = self.connect_to_server()
+        print self.name
         if connected == True:
             connection_label = QtGui.QLabel("Connected")
             
@@ -273,10 +279,12 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         if label != "":
             conf_row_box = self.create_conf_row(label)
 
+            print self.conf_box_pointer_list
             conf_box = self.conf_box_pointer_list[conf_file]
 
             
 
+            print conf_box 
             conf_box.children()[0].addWidget(conf_row_box)
             #server_layout = server_widget.layout()
 
