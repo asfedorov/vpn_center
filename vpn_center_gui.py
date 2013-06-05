@@ -149,6 +149,9 @@ class ServerGUI_Node(server_connect.vpnServerNode):
     def make_server_tab(self):
 
         server_tab_widget = QtGui.QWidget()
+
+        self.server_tab_widget = server_tab_widget
+
         server_layout = QtGui.QVBoxLayout()
         server_widget = QtGui.QScrollArea()
 
@@ -172,11 +175,8 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
         server_widget = self.conf_tab_pointer
 
-        # print self.name
-
-        print self.name
         connected = self.connect_to_server()
-        print self.name
+
         if connected == True:
             connection_label = QtGui.QLabel("Connected")
             
@@ -244,7 +244,8 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         return conf_row_box
 
     def remove_server(self):
-        self.conf_tab_pointer.setParent(None)
+        self.conf_tab_pointer.parentWidget().setParent(None)
+        print self.group_box.parentWidget()
         self.group_box.setParent(None)
 
         
@@ -263,6 +264,10 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
         button = self.mainform_obj.sender()
         conf_line = button.parentWidget()
+
+        ### A lot of work need to be redone there
+        ### chosing to which conf file to add
+        ### etc...
         
         ### there.. need to pick it in any way
         #conf_file = str(conf_line.parentWidget().title())
@@ -279,16 +284,10 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         if label != "":
             conf_row_box = self.create_conf_row(label)
 
-            print self.conf_box_pointer_list
             conf_box = self.conf_box_pointer_list[conf_file]
 
-            
-
-            print conf_box 
             conf_box.children()[0].addWidget(conf_row_box)
-            #server_layout = server_widget.layout()
 
-            #server_layout.addWidget(conf_row_box)
 
         
 
@@ -297,8 +296,7 @@ class MainForm(QtGui.QMainWindow):
 
         QtGui.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
-        # self.ui.setupUi(self)   
-        # super(Window, self).__init__(parent)
+
         self.ui.setupUi(self)
 
         self.server_list_layout = QtGui.QVBoxLayout()
@@ -309,19 +307,6 @@ class MainForm(QtGui.QMainWindow):
 
         self.get_servers_from_config()
 
-    def remove_server_from_list(self):
-        # print "Nya"
-        button = self.sender()
-        group_box = button.parentWidget()
-
-        group_box.obj_pointer.conf_tab_pointer.setParent(None)
-        
-        group_box.setParent(None)
-        # i = self.server_list_layout.indexOf(group_box)
-        
-        # self.server_list_layout.removeItem(self.server_list_layout.itemAt(i))
-        # group_box.hide()
-        
 
     def add_server_to_list(self,name="",ip="",user="",passwd="",port="22"):
         
