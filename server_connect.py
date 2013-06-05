@@ -105,7 +105,7 @@ class vpnServerNode():
         output = ""
         for line in stdout:
             line_parsing = re.sub("#.*\\n|;.*\\n", "", line).strip()
-            line_array = line_parsing.split(" ")
+            line_array = line_parsing.split(" ",1)
             if line_array.__len__() > 1:
                 conf_file.conf[line_array[0]] = line_array[1]
             else:
