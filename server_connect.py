@@ -13,6 +13,7 @@ class ServerList():
         pass
 
     def add_server_node(self, server):
+        print server
         if not server in self.server_list and server != None:
             self.server_list.append(server)
             print "server named "+server.name+" added"
@@ -22,19 +23,20 @@ class ServerList():
             return False
 
 class vpnConfNode():
-    conf = {}
+    
     def __init__(self,name):
         self.name = name
+        self.conf = {}
 
 class vpnServerNode():
-    name = ""
-    ip = ""
-    user = ""
-    passwd = ""
-    port = "22"
-    conf = {}
+
     def __init__(self):
-        pass
+        self.name = ""
+        self.ip = ""
+        self.user = ""
+        self.passwd = ""
+        self.port = "22"
+        self.conf = {}
 
     def set_name(self, name):
         self.name = name
@@ -98,6 +100,7 @@ class vpnServerNode():
 
     def get_conf_file(self, conf_file):
         print conf_file.name
+        print conf_file
         stdin, stdout, stderr = self.ssh.exec_command("cat /etc/openvpn/"+conf_file.name+".conf")
 
 

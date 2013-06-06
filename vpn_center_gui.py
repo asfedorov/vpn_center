@@ -16,6 +16,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         self.port = int(port)
         self.mainform_obj = mainform_obj
         self.conf_box_pointer_list = {}
+        self.conf = {}
 
         self.make_group_box()
         
@@ -132,7 +133,8 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         ##### tab for configuration #####
         self.conf_tab_pointer = self.make_server_tab()
         self.fill_server_tab()
-        print self.conf_box_pointer_list
+        # print self
+        # print self.conf_box_pointer_list
         # print self.mainform_obj.ui.tabWidget.indexOf(self.conf_tab_pointer)
 
 
@@ -149,6 +151,8 @@ class ServerGUI_Node(server_connect.vpnServerNode):
     def make_server_tab(self):
 
         server_tab_widget = QtGui.QWidget()
+
+        server_tab_widget.content_set = "conf"
 
         self.server_tab_widget = server_tab_widget
 
@@ -175,9 +179,10 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
         server_widget = self.conf_tab_pointer
 
-        connected = self.connect_to_server()
+        self.connected = self.connect_to_server()
+        print self.connected
 
-        if connected == True:
+        if self.connected == True:
             connection_label = QtGui.QLabel("Connected")
             
             #conf = self.get_conf_file()
@@ -193,10 +198,11 @@ class ServerGUI_Node(server_connect.vpnServerNode):
                     conf_box.setTitle(conf_file.name)
 
                     conf_layout = QtGui.QVBoxLayout()
-                    conf = self.get_conf_file(conf_file)
+                    self.conf = self.get_conf_file(conf_file)
                     conf_box.setLayout(conf_layout)
 
-                    print conf_file.conf
+                    # print conf_file
+                    # print conf_file.conf
 
                     for conf_line in conf_file.conf:
 
@@ -245,7 +251,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
     def remove_server(self):
         self.conf_tab_pointer.parentWidget().setParent(None)
-        print self.group_box.parentWidget()
+        # print self.group_box.parentWidget()
         self.group_box.setParent(None)
 
         
@@ -258,7 +264,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
 
         self.conf[conf_file].conf.pop(conf_row_label)
         conf_line.setParent(None)
-        print conf_row_label
+        # print conf_row_label
 
     def add_conf_line(self):
 
@@ -271,7 +277,7 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         
         ### there.. need to pick it in any way
         #conf_file = str(conf_line.parentWidget().title())
-        print conf_line.children()[1].children()[0].children()[0].title()
+        # print conf_line.children()[1].children()[0].children()[0].title()
         conf_file = str(conf_line.children()[1].children()[0].children()[0].title())
 
         dialog = QtGui.QInputDialog()
@@ -302,8 +308,13 @@ class MainForm(QtGui.QMainWindow):
         self.server_list_layout = QtGui.QVBoxLayout()
         self.ui.server_list_container.setLayout(self.server_list_layout)
 
+        self.ui.tab.content_set = "server_list"
+
         self.connect(self.ui.add_server_button, 
             QtCore.SIGNAL('pressed()'),self.add_server_to_list)
+
+        self.connect(self.ui.tabWidget,
+            QtCore.SIGNAL("currentChanged(int)"),self.tab_changed)
 
         self.get_servers_from_config()
 
@@ -323,6 +334,14 @@ class MainForm(QtGui.QMainWindow):
             self.add_server_to_list(server.name,server.ip,
                 server.user,server.passwd,server.port)
 
+    def set_edit_conf_menu_active(self):
+        self.ui.menuConfiguration.setDisabled(False)
+
+    def tab_changed(self, i):
+        if self.ui.tabWidget.currentWidget().content_set == "conf":
+            self.set_edit_conf_menu_active()
+        elif self.ui.tabWidget.currentWidget().content_set == "server_list":
+            self.ui.menuConfiguration.setDisabled(True)
     
 
 
