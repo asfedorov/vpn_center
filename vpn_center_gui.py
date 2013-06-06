@@ -255,7 +255,8 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         self.group_box.setParent(None)
         # print self.mainform_obj.server_pointers
         # print 
-        self.mainform_obj.server_pointers.pop(self.mainform_obj.server_pointers.index(self))
+        self.mainform_obj.server_pointers.remove(self)
+        print "::",self.mainform_obj.server_pointers
 
         
     def remove_conf_line(self):
@@ -356,8 +357,12 @@ class MainForm(QtGui.QMainWindow):
     def add_server_to_list(self,name="",ip="",user="",passwd="",port="22"):
         
         server = ServerGUI_Node(self,name,ip,user,passwd,port)
-        
-        self.server_pointers.append(server)
+        if self.server_pointers != None:
+            self.server_pointers.append(server)
+        else:
+            self.server_pointers = []
+            self.server_pointers.append(server)
+
         self.server_list_layout.addWidget(server.group_box)
         
 
