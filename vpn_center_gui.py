@@ -253,6 +253,9 @@ class ServerGUI_Node(server_connect.vpnServerNode):
         self.conf_tab_pointer.parentWidget().setParent(None)
         # print self.group_box.parentWidget()
         self.group_box.setParent(None)
+        # print self.mainform_obj.server_pointers
+        # print 
+        self.mainform_obj.server_pointers.pop(self.mainform_obj.server_pointers.index(self))
 
         
     def remove_conf_line(self):
@@ -305,6 +308,9 @@ class MainForm(QtGui.QMainWindow):
 
         self.ui.setupUi(self)
 
+        self.server_pointers = []
+        self.config_file = "config"
+
         self.server_list_layout = QtGui.QVBoxLayout()
         self.ui.server_list_container.setLayout(self.server_list_layout)
 
@@ -316,21 +322,52 @@ class MainForm(QtGui.QMainWindow):
         self.connect(self.ui.tabWidget,
             QtCore.SIGNAL("currentChanged(int)"),self.tab_changed)
 
+        ### menu triggers
+        ### wonder if i can connect this ways buttons, etc...
+        ### lazy to read manual for it :P
+        self.ui.actionExit.triggered.connect(QtGui.qApp.quit)
+        ### :'-(((can not connect to a function)))-':
+        #self.ui.actionOpen.triggered.connect(self.open_config_file())
+        self.connect(self.ui.actionOpen,
+            QtCore.SIGNAL("triggered()"),self.open_config_file)
+
         self.get_servers_from_config()
+
+        
+
+    def open_config_file(self):
+        open_dialog = QtGui.QFileDialog()
+        # open_dialog.exec_()
+
+        # print open_dialog
+
+        self.config_file = open_dialog.getOpenFileName()
+        self.rebuild_config_gui(self.config_file)
+
+    def rebuild_config_gui(self, config_file):
+        print self.server_pointers
+        for server in self.server_pointers:
+            server.remove_server()
+            print self.server_pointers
+
+        self.get_servers_from_config(config_file)
 
 
     def add_server_to_list(self,name="",ip="",user="",passwd="",port="22"):
         
         server = ServerGUI_Node(self,name,ip,user,passwd,port)
         
+        self.server_pointers.append(server)
         self.server_list_layout.addWidget(server.group_box)
         
 
         # self.ui.server_list_layout.addWidget(group_box)
 
-    def get_servers_from_config(self):
-        server_list = server_connect.get_config()
+    def get_servers_from_config(self, config_file=None):
+        server_list = server_connect.get_config(config_file)
+        print server_list.server_list
         for server in server_list.server_list:
+
             self.add_server_to_list(server.name,server.ip,
                 server.user,server.passwd,server.port)
 

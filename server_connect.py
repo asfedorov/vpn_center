@@ -118,10 +118,13 @@ class vpnServerNode():
         return output
 
 
-def get_config(config_file=None):
-    if config_file==None:
+def get_config(config_file_name=None):
+    if config_file_name==None:
         
         config_file = open("config", "rw")
+
+    else:
+        config_file = open(config_file_name,"rw")
 
 
     server_list = ServerList()

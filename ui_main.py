@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created: Thu Jun  6 10:17:54 2013
+# Created: Thu Jun  6 10:48:11 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -34,6 +34,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setGeometry(QtCore.QRect(0, 0, 791, 551))
         self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
         self.tab = QtGui.QWidget()
+        self.tab.setEnabled(True)
         self.tab.setObjectName(_fromUtf8("tab"))
         self.scrollArea = QtGui.QScrollArea(self.tab)
         self.scrollArea.setGeometry(QtCore.QRect(20, 30, 461, 471))
@@ -65,6 +66,7 @@ class Ui_MainWindow(object):
         self.menuEdit = QtGui.QMenu(self.menubar)
         self.menuEdit.setObjectName(_fromUtf8("menuEdit"))
         self.menuConfiguration = QtGui.QMenu(self.menuEdit)
+        self.menuConfiguration.setEnabled(False)
         self.menuConfiguration.setObjectName(_fromUtf8("menuConfiguration"))
         self.menuHelp = QtGui.QMenu(self.menubar)
         self.menuHelp.setObjectName(_fromUtf8("menuHelp"))
@@ -105,6 +107,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
+        self.tab.setProperty("content_set", _translate("MainWindow", "server_list", None))
         self.add_server_button.setText(_translate("MainWindow", "Add", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Список серверов", None))
         self.menuFile.setTitle(_translate("MainWindow", "File", None))
